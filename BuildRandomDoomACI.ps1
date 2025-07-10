@@ -58,10 +58,9 @@ $ownername = $tmp.Account.Id
 
 New-AzResourceGroup -Name $resgrp -Location $region -Tag @{owner=$ownername} -force
 
-$port = New-AzContainerInstancePortObject -Port 6901 -Protocol UDP
+$port = New-AzContainerInstancePortObject -Port 8080 -Protocol TCP
 # updated to use the latest helloworld image which displays attestation output
-$container = New-AzContainerInstanceObject -Name $containerName -Image "b0nam/docker-doom"
-
+$container = New-AzContainerInstanceObject -Name $containerName -Image "b0nam/docker-doom" -Port @($port)
 
 $containerGroup = New-AzContainerGroup -ResourceGroupName $resgrp -Name $containerGroupName -Location $region -Container @($container) -OsType Linux -IpAddressDnsNameLabel ($basename + "dns") -IpAddressType Public -Sku confidential
 Get-AzContainerGroup -ResourceGroupName $resgrp -Name $containerGroupName
